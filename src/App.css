@@ -1,0 +1,102 @@
+
+.toolbox-container {
+  margin-top: 10px;
+  margin-left: 650px;
+  position: fixed;
+  z-index: 2;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1px; /* Increase padding */
+}
+
+.toolbox {
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+}
+
+.toolbox button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 12px; /* Increase button padding */
+  font-size: 12px; /* Increase font size */
+}
+
+.toolbox button:hover {
+  background-color: #eecfff;
+  border-radius: 10px;
+}
+.toolbox button.selected {
+  background-color: #f8ecff;
+  border-radius: 10px;
+}
+
+
+.toolbox button:focus {
+  outline: none;
+}
+#canvas{
+  background-color: rgb(245, 245, 245);
+}
+
+.options {
+  margin-top: 18px;
+  margin-left: 18px;
+  position: fixed;
+  z-index: 2;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(118, 118, 118, 0.1);
+
+}
+
+.btnoption {
+  background-color: #e0d9e0;
+  color: rgb(74, 74, 74);
+  border: none;
+  cursor: pointer;
+  padding: 10px; 
+  font-size: 19px;
+  border-radius: 10px;
+}
+
+
+.options button:hover {
+  background-color: #fdf0fd;
+  border-radius: 10px;
+}
+
+.dropdown-content {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1;
+  box-shadow: 0 2px 10px rgba(118, 118, 118, 0.1);
+
+}
+
+.dropdown-content button {
+  border: none;
+  background-color: #fff;
+  margin-top: 5px;
+  width: 100%; 
+  height: auto;
+  text-align: left; 
+  font-size: 1rem; 
+  padding: 5px; 
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+}
+
+.dropdown-content button:hover {
+  background-color: #f8ecff;
+  border-radius: 5px;
+}
