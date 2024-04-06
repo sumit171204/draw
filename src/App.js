@@ -553,7 +553,6 @@ const toggleDarkMode = () => {
   setDarkMode(prevDarkMode => !prevDarkMode);
 }
 
-// Touch event handlers
 const handleTouchStart = event => {
   event.preventDefault(); // Prevent default touch behavior
   const { clientX, clientY } = event.touches[0];
@@ -576,6 +575,7 @@ const handleTouchCancel = event => {
   event.preventDefault(); // Prevent default touch behavior
   // Add your touch cancellation handling logic here
 };
+
 
 
   return (
