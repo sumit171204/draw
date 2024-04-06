@@ -5,9 +5,12 @@ import { IoRemoveOutline,IoCloseSharp } from "react-icons/io5";
 import rough from "roughjs/bundled/rough.esm";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import getStroke from "perfect-freehand";
-import Draggable from 'react-draggable';
 import "./App.css";
-
+// Import Draggable only in desktop environment
+let Draggable;
+if (window.innerWidth > 768) {
+  Draggable = require('react-draggable');
+}
 const generator = rough.generator();
 
 const createElement = (id, x1, y1, x2, y2, type, pencilColor) => {
@@ -609,6 +612,7 @@ const handleTouchCancel = event => {
       
 
     </div>
+      <Draggable>
         <div className="toolbox-container">
           <div className="toolbox">
             <button className={selectedTool === "selection" ? "selected" : ""} onClick={() => handleToolClick("selection")} title="Selection"><FaMousePointer /></button>
@@ -620,6 +624,7 @@ const handleTouchCancel = event => {
             <button onClick={redo} title="Redo"><FaRedo /></button>
           </div>
         </div>
+      </Draggable>
       {action === "writing" ? (
         <textarea
           ref={textAreaRef}
