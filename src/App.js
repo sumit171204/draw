@@ -552,21 +552,29 @@ const handleClosePopup = () => {
 const toggleDarkMode = () => {
   setDarkMode(prevDarkMode => !prevDarkMode);
 }
-const handleTouchStart = (event) => {
-  event.preventDefault();
+
+// Touch event handlers
+const handleTouchStart = event => {
+  event.preventDefault(); // Prevent default touch behavior
   const { clientX, clientY } = event.touches[0];
   handleMouseDown({ clientX, clientY });
 };
 
-const handleTouchMove = (event) => {
-  event.preventDefault();
+const handleTouchMove = event => {
+  event.preventDefault(); // Prevent default touch behavior
   const { clientX, clientY } = event.touches[0];
   handleMouseMove({ clientX, clientY });
 };
 
-const handleTouchEnd = (event) => {
-  event.preventDefault();
+const handleTouchEnd = event => {
+  event.preventDefault(); // Prevent default touch behavior
   handleMouseUp();
+};
+
+// Optional: Handle touch cancellation if needed
+const handleTouchCancel = event => {
+  event.preventDefault(); // Prevent default touch behavior
+  // Add your touch cancellation handling logic here
 };
 
 
@@ -652,8 +660,9 @@ const handleTouchEnd = (event) => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onTouchStart={handleTouchStart}
-  onTouchMove={handleTouchMove}
-  onTouchEnd={handleTouchEnd}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel} 
       style={{ 
         position: "absolute", 
         zIndex: 1,
