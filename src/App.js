@@ -10,7 +10,7 @@ import "./App.css";
 
 const generator = rough.generator();
 
-const createElement = (id, x1, y1, x2, y2, type) => {
+const createElement = (id, x1, y1, x2, y2, type, pencilColor) => {
   switch (type) {
     case "line":
     case "rectangle":
@@ -18,11 +18,11 @@ const createElement = (id, x1, y1, x2, y2, type) => {
         type === "line"
           ? generator.line(x1, y1, x2, y2)
           : generator.rectangle(x1, y1, x2 - x1, y2 - y1);
-      return { id, x1, y1, x2, y2, type, roughElement };
+      return { id, x1, y1, x2, y2, type, roughElement, pencilColor };
     case "pencil":
-      return { id, type, points: [{ x: x1, y: y1 }] };
+      return { id, type, points: [{ x: x1, y: y1 }], pencilColor };
     case "text":
-      return { id, type, x1, y1, x2, y2, text: "" };
+      return { id, type, x1, y1, x2, y2, text: "", pencilColor };
     default:
       throw new Error(`Type not recognised: ${type}`);
   }
@@ -123,7 +123,7 @@ const resizedCoordinates = (clientX, clientY, position, coordinates) => {
     case "end":
       return { x1, y1, x2: clientX, y2: clientY };
     default:
-      return null; //should not really get here...
+      return null;
   }
 };
 
@@ -166,25 +166,37 @@ const getSvgPathFromStroke = stroke => {
   return d.join(" ");
 };
 
-const drawElement = (roughCanvas, context, element) => {
+const drawElement = (roughCanvas, context, element, pencilColor, pencilSize) => {
   switch (element.type) {
     case "line":
     case "rectangle":
       roughCanvas.draw(element.roughElement);
       break;
     case "pencil":
-      const stroke = getSvgPathFromStroke(getStroke(element.points));
-      context.fill(new Path2D(stroke));
+      context.fillStyle = pencilColor;
+      context.strokeStyle = pencilColor; // Set the stroke color
+      context.lineWidth = pencilSize; // Set the line width
+      context.lineJoin = "round"; // Set line join style to round for smoother lines
+      context.lineCap = "round"; // Set line cap style to round for smoother lines
+      
+      context.beginPath();
+      const stroke = getStroke(element.points);
+      const path = new Path2D(getSvgPathFromStroke(stroke));
+      context.stroke(path); // Stroke the path
+      context.fill(path); // Fill the path
       break;
     case "text":
       context.textBaseline = "top";
       context.font = "24px sans-serif";
+      context.fillStyle = pencilColor;
       context.fillText(element.text, element.x1, element.y1);
       break;
     default:
       throw new Error(`Type not recognised: ${element.type}`);
   }
 };
+
+
 
 const adjustmentRequired = type => ["line", "rectangle"].includes(type);
 
@@ -225,8 +237,10 @@ const App = () => {
   const textAreaRef = useRef();
   const pressedKeys = usePressedKeys();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedTool, setSelectedTool] = useState("pencil"); // Define selectedTool and setSelectedTool
-
+  const [selectedTool, setSelectedTool] = useState("pencil"); 
+  const [showPencilBox, setShowPencilBox] = useState(false);
+  const [pencilColor, setPencilColor] = useState("#000000"); 
+  const [pencilSize, setPencilSize] = useState(1); 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
@@ -235,18 +249,19 @@ const App = () => {
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
     const roughCanvas = rough.canvas(canvas);
-
+  
     context.clearRect(0, 0, canvas.width, canvas.height);
-
+  
     context.save();
     context.translate(panOffset.x, panOffset.y);
-
+  
     elements.forEach(element => {
       if (action === "writing" && selectedElement.id === element.id) return;
-      drawElement(roughCanvas, context, element);
+      drawElement(roughCanvas, context, element, pencilColor, pencilSize);
     });
     context.restore();
-  }, [elements, action, selectedElement, panOffset]);
+  }, [elements, action, selectedElement, panOffset, pencilColor, pencilSize]);
+  
 
   useEffect(() => {
     const undoRedoFunction = event => {
@@ -319,10 +334,13 @@ const App = () => {
   };
 
   const getMouseCoordinates = event => {
-    const clientX = event.clientX - panOffset.x;
-    const clientY = event.clientY - panOffset.y;
+    const canvas = document.getElementById("canvas");
+    const rect = canvas.getBoundingClientRect();
+    const clientX = event.clientX - rect.left - panOffset.x;
+    const clientY = event.clientY - rect.top - panOffset.y;
     return { clientX, clientY };
   };
+  
 
   const handleMouseDown = event => {
     if (action === "writing") return;
@@ -357,14 +375,15 @@ const App = () => {
       }
     } else {
       const id = elements.length;
-      const element = createElement(id, clientX, clientY, clientX, clientY, tool);
+      const element = createElement(id, clientX, clientY, clientX, clientY, tool, pencilColor); // Pass pencilColor here
       setElements(prevState => [...prevState, element]);
       setSelectedElement(element);
-
+    
       setAction(tool === "text" ? "writing" : "drawing");
     }
   };
-
+  
+  
   const handleMouseMove = event => {
     const { clientX, clientY } = getMouseCoordinates(event);
 
@@ -381,6 +400,9 @@ const App = () => {
     if (tool === "selection") {
       const element = getElementAtPosition(clientX, clientY, elements);
       event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
+    } else {
+      // Set cross cursor for drawing tools
+      event.target.style.cursor = "crosshair";
     }
 
     if (action === "drawing") {
@@ -487,7 +509,28 @@ const App = () => {
       setElements([]); 
     }
   };
+  
+  const handlePencilClick = () => {
+    setShowPencilBox(prevState => !prevState);
+  };
+  
+  
+  const handleToolClick = (toolName) => {
+    if (toolName !== "pencil") {
+      setShowPencilBox(false);
+    }
+    setTool(toolName);
+    setSelectedTool(toolName);
+  };
+  // Function to handle changes in pencil color
+const handlePencilColorChange = (event) => {
+  setPencilColor(event.target.value);
+};
 
+// Function to handle changes in pencil size
+const handlePencilSizeChange = (event) => {
+  setPencilSize(parseInt(event.target.value));
+};
   return (
     <div>
       <div>
@@ -503,15 +546,17 @@ const App = () => {
           </div>
         )}
       </div>
+      
+
     </div>
       <Draggable>
         <div className="toolbox-container">
           <div className="toolbox">
-            <button className={selectedTool === "selection" ? "selected" : ""} onClick={() => { setTool("selection"); setSelectedTool("selection"); }} title="Selection"><FaMousePointer /></button>
-            <button className={selectedTool === "line" ? "selected" : ""} onClick={() => { setTool("line"); setSelectedTool("line"); }} title="Line"><IoRemoveOutline /></button>
-            <button className={selectedTool === "rectangle" ? "selected" : ""} onClick={() => { setTool("rectangle"); setSelectedTool("rectangle"); }} title="Rectangle"><MdOutlineRectangle /></button>
-            <button className={selectedTool === "pencil" ? "selected" : ""} onClick={() => { setTool("pencil"); setSelectedTool("pencil"); }} title="Pen"><FaPencilAlt /></button>
-            <button className={selectedTool === "text" ? "selected" : ""} onClick={() => { setTool("text"); setSelectedTool("text"); }} title="Text"><FaFont /></button>
+            <button className={selectedTool === "selection" ? "selected" : ""} onClick={() => handleToolClick("selection")} title="Selection"><FaMousePointer /></button>
+            <button className={selectedTool === "line" ? "selected" : ""} onClick={() => handleToolClick("line")} title="Line"><IoRemoveOutline /></button>
+            <button className={selectedTool === "rectangle" ? "selected" : ""} onClick={() => handleToolClick("rectangle")} title="Rectangle"><MdOutlineRectangle /></button>
+            <button className={selectedTool === "pencil" ? "selected" : ""} onClick={() => { handlePencilClick(); handleToolClick("pencil"); }} title="Pen"><FaPencilAlt /></button>
+            <button className={selectedTool === "text" ? "selected" : ""} onClick={() => handleToolClick("text")} title="Text"><FaFont /></button>
             <button onClick={undo} title="Undo"><FaUndo /></button>
             <button onClick={redo} title="Redo"><FaRedo /></button>
           </div>
@@ -538,6 +583,15 @@ const App = () => {
           }}
         />
       ) : null}
+        {showPencilBox && (
+          <div className="pencil-box">
+            <label htmlFor="pencil-color">Pen Color:</label>
+            <input type="color" id="pencil-color" value={pencilColor} onChange={handlePencilColorChange} />
+            <label htmlFor="pencil-size">Pen Size:</label>
+            <input type="range" id="pencil-size" min="0.01" max="20" value={pencilSize} onChange={handlePencilSizeChange} />
+          </div>
+        )}
+
       <canvas
         id="canvas"
         width={window.innerWidth}
