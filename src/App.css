@@ -129,11 +129,36 @@
   background-color: #0056b3;
 }
 
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 999;
+}
+
+.popup-content {
+  text-align: center;
+}
+
+.popup button {
+  margin-left: 570px;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+}
 
 
 /* Media Queries */
 @media only screen and (max-width: 600px) {
   .toolbox-container {
+    position: fixed;
     margin-top: 600px;
     margin-left:50px;
   }
@@ -148,5 +173,11 @@
 
   .options {
     margin-left: 5px;
+  }
+  .popup{
+    width: 250px;
+  }
+  .popup button{
+    margin-left: 220px;
   }
 }

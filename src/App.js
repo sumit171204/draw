@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FaMousePointer, FaPencilAlt, FaFont, FaUndo, FaRedo, FaFolderOpen } from "react-icons/fa";
 import { MdOutlineRectangle, MdOutlineSaveAlt, MdDelete } from "react-icons/md";
-import { IoRemoveOutline } from "react-icons/io5";
+import { IoRemoveOutline,IoCloseSharp } from "react-icons/io5";
 import rough from "roughjs/bundled/rough.esm";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import getStroke from "perfect-freehand";
@@ -241,6 +241,8 @@ const App = () => {
   const [showPencilBox, setShowPencilBox] = useState(false);
   const [pencilColor, setPencilColor] = useState("#000000"); 
   const [pencilSize, setPencilSize] = useState(1); 
+  const [showPopup, setShowPopup] = useState(true);
+
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
@@ -531,8 +533,24 @@ const handlePencilColorChange = (event) => {
 const handlePencilSizeChange = (event) => {
   setPencilSize(parseInt(event.target.value));
 };
+
+const handleClosePopup = () => {
+  setShowPopup(false);
+};
   return (
     <div>
+      {/* Your existing content */}
+      {showPopup && (
+        <div className="popup">
+          <button onClick={handleClosePopup}><IoCloseSharp /></button>
+          <div className="popup-content">
+            <h2>Notice</h2>
+            <p>Currently added : Size and Color of Pen. ( Issues )</p>
+            <p>Cursor is now CrossHair.</p>
+            <p>Note : Website is in Early Development there are issues to be solved.</p>
+          </div>
+        </div>
+      )}
       <div>
       <div className="options">
         <button className="btnoption" onClick={toggleDropdown}><HiOutlineBars3/></button>
