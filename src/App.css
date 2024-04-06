@@ -70,6 +70,7 @@
 }
 
 .dropdown-content {
+  margin-top: 5px;
   display: flex;
   flex-direction: column;
   border: 1px solid #ccc;
@@ -79,7 +80,6 @@
   position: absolute;
   z-index: 1;
   box-shadow: 0 2px 10px rgba(118, 118, 118, 0.1);
-
 }
 
 .dropdown-content button {
@@ -99,4 +99,23 @@
 .dropdown-content button:hover {
   background-color: #f8ecff;
   border-radius: 5px;
+}
+/* Media Queries */
+@media only screen and (max-width: 600px) {
+  .toolbox-container {
+    margin-top: 600px;
+    margin-left:50px;
+  }
+
+  .toolbox {
+    flex-direction: row;
+  }
+
+  .toolbox button {
+    margin-bottom: 5px;
+  }
+
+  .options {
+    margin-left: 5px;
+  }
 }
