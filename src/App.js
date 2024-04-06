@@ -5,13 +5,8 @@ import { IoRemoveOutline,IoCloseSharp } from "react-icons/io5";
 import rough from "roughjs/bundled/rough.esm";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import getStroke from "perfect-freehand";
+import Draggable from "react-draggable";
 import "./App.css";
-// Import Draggable only in desktop environment
-let Draggable;
-if (window.innerWidth > 768) {
-  Draggable = require('react-draggable');
-}
-
 const generator = rough.generator();
 
 const createElement = (id, x1, y1, x2, y2, type, pencilColor) => {
@@ -565,10 +560,20 @@ const toggleDarkMode = () => {
   setDarkMode(prevDarkMode => !prevDarkMode);
 }
 
+// Remove handleMouseDown event handler
+
 const handleTouchStart = event => {
   event.preventDefault(); // Prevent default touch behavior
   const { clientX, clientY } = event.touches[0];
-  handleMouseDown({ clientX, clientY });
+  
+  // Start drawing immediately after selecting a tool
+  if (tool !== "selection") {
+    const id = elements.length;
+    const element = createElement(id, clientX, clientY, clientX, clientY, tool, pencilColor);
+    setElements(prevState => [...prevState, element]);
+    setSelectedElement(element);
+    setAction(tool === "text" ? "writing" : "drawing");
+  }
 };
 
 const handleTouchMove = event => {
@@ -582,13 +587,10 @@ const handleTouchEnd = event => {
   handleMouseUp();
 };
 
-// Optional: Handle touch cancellation if needed
 const handleTouchCancel = event => {
   event.preventDefault(); // Prevent default touch behavior
   // Add your touch cancellation handling logic here
 };
-
-
 
   return (
     <div>
