@@ -609,7 +609,6 @@ const handleTouchCancel = event => {
       
 
     </div>
-      <Draggable>
         <div className="toolbox-container">
           <div className="toolbox">
             <button className={selectedTool === "selection" ? "selected" : ""} onClick={() => handleToolClick("selection")} title="Selection"><FaMousePointer /></button>
@@ -621,7 +620,6 @@ const handleTouchCancel = event => {
             <button onClick={redo} title="Redo"><FaRedo /></button>
           </div>
         </div>
-      </Draggable>
       {action === "writing" ? (
         <textarea
           ref={textAreaRef}
