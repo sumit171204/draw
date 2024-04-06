@@ -519,13 +519,17 @@ const App = () => {
     setShowPencilBox(prevState => !prevState);
   };
   
-  
-  const handleToolClick = (toolName) => {
-    if (toolName !== "pencil") {
-      setShowPencilBox(false);
-    }
+  const handleToolSelect = (toolName) => {
     setTool(toolName);
     setSelectedTool(toolName);
+  };
+  
+  const handleToolClick = (toolName) => {
+    if (toolName !== selectedTool) {
+      handleToolSelect(toolName);
+    } else if (toolName === "pencil") {
+      setShowPencilBox(!showPencilBox);
+    }
   };
   
 const handlePencilColorChange = (event) => {
@@ -550,20 +554,14 @@ const toggleDarkMode = () => {
 }
 const handleTouchStart = (event) => {
   event.preventDefault();
-  const touch = event.touches[0];
-  handleMouseDown({
-    clientX: touch.clientX,
-    clientY: touch.clientY
-  });
+  const { clientX, clientY } = event.touches[0];
+  handleMouseDown({ clientX, clientY });
 };
 
 const handleTouchMove = (event) => {
   event.preventDefault();
-  const touch = event.touches[0];
-  handleMouseMove({
-    clientX: touch.clientX,
-    clientY: touch.clientY
-  });
+  const { clientX, clientY } = event.touches[0];
+  handleMouseMove({ clientX, clientY });
 };
 
 const handleTouchEnd = (event) => {
