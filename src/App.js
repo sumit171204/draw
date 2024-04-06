@@ -548,6 +548,28 @@ const handleClosePopup = () => {
 const toggleDarkMode = () => {
   setDarkMode(prevDarkMode => !prevDarkMode);
 }
+const handleTouchStart = event => {
+  event.preventDefault(); // Prevent default touch behavior like scrolling
+  const touch = event.touches[0];
+  handleMouseDown({
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  });
+};
+
+const handleTouchMove = event => {
+  event.preventDefault(); // Prevent default touch behavior like scrolling
+  const touch = event.touches[0];
+  handleMouseMove({
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  });
+};
+
+const handleTouchEnd = event => {
+  event.preventDefault(); // Prevent default touch behavior like scrolling
+  handleMouseUp();
+};
 
   return (
     <div>
@@ -623,22 +645,25 @@ const toggleDarkMode = () => {
           </div>
         )}
 
-<canvas
-  id="canvas"
-  width={window.innerWidth}
-  height={window.innerHeight}
-  onMouseDown={handleMouseDown}
-  onMouseMove={handleMouseMove}
-  onMouseUp={handleMouseUp}
-  style={{ 
-    position: "absolute", 
-    zIndex: 1,
-    backgroundColor: darkMode ? "#333333" : "#ffffff",
-    color: darkMode ? "#ffffff" : "#000000" 
-  }}
->
-  Canvas
-</canvas>
+    <canvas
+      id="canvas"
+      width={window.innerWidth}
+      height={window.innerHeight}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onTouchStart={handleTouchStart}
+  onTouchMove={handleTouchMove}
+  onTouchEnd={handleTouchEnd}
+      style={{ 
+        position: "absolute", 
+        zIndex: 1,
+        backgroundColor: darkMode ? "#333333" : "#ffffff",
+        color: darkMode ? "#ffffff" : "#000000" 
+      }}
+    >
+      Canvas
+    </canvas>
 
     </div>
   );
