@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FaMousePointer, FaPencilAlt, FaFont, FaUndo, FaRedo, FaFolderOpen } from "react-icons/fa";
-import { MdOutlineRectangle, MdOutlineSaveAlt, MdDelete } from "react-icons/md";
+import { MdOutlineRectangle, MdOutlineSaveAlt, MdDelete, MdDarkMode  } from "react-icons/md";
 import { IoRemoveOutline,IoCloseSharp } from "react-icons/io5";
 import rough from "roughjs/bundled/rough.esm";
 import { HiOutlineBars3 } from "react-icons/hi2";
@@ -166,35 +166,37 @@ const getSvgPathFromStroke = stroke => {
   return d.join(" ");
 };
 
-const drawElement = (roughCanvas, context, element, pencilColor, pencilSize) => {
+const drawElement = (roughCanvas, context, element, pencilColor, pencilSize, darkMode) => {
   switch (element.type) {
     case "line":
     case "rectangle":
+      context.strokeStyle = darkMode ? '#ffffff' : pencilColor; 
       roughCanvas.draw(element.roughElement);
       break;
     case "pencil":
-      context.fillStyle = pencilColor;
-      context.strokeStyle = pencilColor; // Set the stroke color
-      context.lineWidth = pencilSize; // Set the line width
-      context.lineJoin = "round"; // Set line join style to round for smoother lines
-      context.lineCap = "round"; // Set line cap style to round for smoother lines
-      
+      context.fillStyle = darkMode ? '#ffffff' : pencilColor; 
+      context.strokeStyle = darkMode ? '#ffffff' : pencilColor; 
+      context.lineWidth = pencilSize;
+      context.lineJoin = "round";
+      context.lineCap = "round";
       context.beginPath();
       const stroke = getStroke(element.points);
       const path = new Path2D(getSvgPathFromStroke(stroke));
-      context.stroke(path); // Stroke the path
-      context.fill(path); // Fill the path
+      context.stroke(path);
+      context.fill(path);
       break;
     case "text":
+      context.fillStyle = darkMode ? '#ffffff' : pencilColor; 
       context.textBaseline = "top";
       context.font = "24px sans-serif";
-      context.fillStyle = pencilColor;
       context.fillText(element.text, element.x1, element.y1);
       break;
     default:
       throw new Error(`Type not recognised: ${element.type}`);
   }
 };
+
+
 
 
 
@@ -242,6 +244,7 @@ const App = () => {
   const [pencilColor, setPencilColor] = useState("#000000"); 
   const [pencilSize, setPencilSize] = useState(1); 
   const [showPopup, setShowPopup] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -259,10 +262,11 @@ const App = () => {
   
     elements.forEach(element => {
       if (action === "writing" && selectedElement.id === element.id) return;
-      drawElement(roughCanvas, context, element, pencilColor, pencilSize);
+      drawElement(roughCanvas, context, element, pencilColor, pencilSize, darkMode); // Pass darkMode here
     });
     context.restore();
-  }, [elements, action, selectedElement, panOffset, pencilColor, pencilSize]);
+  }, [elements, action, selectedElement, panOffset, pencilColor, pencilSize, darkMode]); // Include darkMode in the dependency array
+  
   
 
   useEffect(() => {
@@ -403,7 +407,6 @@ const App = () => {
       const element = getElementAtPosition(clientX, clientY, elements);
       event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
     } else {
-      // Set cross cursor for drawing tools
       event.target.style.cursor = "crosshair";
     }
 
@@ -524,12 +527,17 @@ const App = () => {
     setTool(toolName);
     setSelectedTool(toolName);
   };
-  // Function to handle changes in pencil color
+  
 const handlePencilColorChange = (event) => {
   setPencilColor(event.target.value);
+  if (darkMode) {
+    event.target.style.color = "#ffffff";
+  } else {
+    event.target.style.color = "#000000";
+  }
 };
 
-// Function to handle changes in pencil size
+
 const handlePencilSizeChange = (event) => {
   setPencilSize(parseInt(event.target.value));
 };
@@ -537,9 +545,12 @@ const handlePencilSizeChange = (event) => {
 const handleClosePopup = () => {
   setShowPopup(false);
 };
+const toggleDarkMode = () => {
+  setDarkMode(prevDarkMode => !prevDarkMode);
+}
+
   return (
     <div>
-      {/* Your existing content */}
       {showPopup && (
         <div className="popup">
           <button onClick={handleClosePopup}><IoCloseSharp /></button>
@@ -547,12 +558,13 @@ const handleClosePopup = () => {
             <h2>Notice</h2>
             <p>Currently added : Size and Color of Pen. ( Issues )</p>
             <p>Cursor is now CrossHair.</p>
+            <p>Added Dark Mode!</p>
             <p>Note : Website is in Early Development there are issues to be solved.</p>
           </div>
         </div>
       )}
       <div>
-      <div className="options">
+      <div className="options" >
         <button className="btnoption" onClick={toggleDropdown}><HiOutlineBars3/></button>
         {showDropdown && (
           <div className="dropdown-content">
@@ -561,6 +573,7 @@ const handleClosePopup = () => {
 
             <button onClick={handleSave}><MdOutlineSaveAlt/>&nbsp;&nbsp;Save</button>
             <button onClick={handleResetCanvas}><MdDelete/>&nbsp;&nbsp;Reset the Canvas</button> {/* Add the reset button */}
+            <button onClick={toggleDarkMode}><MdDarkMode />&nbsp;&nbsp;Dark Mode</button>
           </div>
         )}
       </div>
@@ -610,17 +623,23 @@ const handleClosePopup = () => {
           </div>
         )}
 
-      <canvas
-        id="canvas"
-        width={window.innerWidth}
-        height={window.innerHeight}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        style={{ position: "absolute", zIndex: 1 }}
-      >
-        Canvas
-      </canvas>
+<canvas
+  id="canvas"
+  width={window.innerWidth}
+  height={window.innerHeight}
+  onMouseDown={handleMouseDown}
+  onMouseMove={handleMouseMove}
+  onMouseUp={handleMouseUp}
+  style={{ 
+    position: "absolute", 
+    zIndex: 1,
+    backgroundColor: darkMode ? "#333333" : "#ffffff",
+    color: darkMode ? "#ffffff" : "#000000" 
+  }}
+>
+  Canvas
+</canvas>
+
     </div>
   );
 };
