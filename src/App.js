@@ -5,8 +5,12 @@ import { IoRemoveOutline,IoCloseSharp } from "react-icons/io5";
 import rough from "roughjs/bundled/rough.esm";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import getStroke from "perfect-freehand";
-import Draggable from 'react-draggable';
 import "./App.css";
+// Import Draggable only in desktop environment
+let Draggable;
+if (window.innerWidth > 768) {
+  Draggable = require('react-draggable');
+}
 
 const generator = rough.generator();
 
