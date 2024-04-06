@@ -506,15 +506,15 @@ const App = () => {
     </div>
       <Draggable>
         <div className="toolbox-container">
-           <div className="toolbox">
-           <button className={selectedTool === "selection" ? "selected" : ""} onClick={() => { setTool("selection"); setSelectedTool("selection"); }}><FaMousePointer /></button>
-          <button className={selectedTool === "line" ? "selected" : ""} onClick={() => { setTool("line"); setSelectedTool("line"); }}><IoRemoveOutline /></button>
-          <button className={selectedTool === "rectangle" ? "selected" : ""} onClick={() => { setTool("rectangle"); setSelectedTool("rectangle"); }}><MdOutlineRectangle /></button>
-          <button className={selectedTool === "pencil" ? "selected" : ""} onClick={() => { setTool("pencil"); setSelectedTool("pencil"); }}><FaPencilAlt /></button>
-          <button className={selectedTool === "text" ? "selected" : ""} onClick={() => { setTool("text"); setSelectedTool("text"); }}><FaFont /></button>
-          <button onClick={undo}><FaUndo /></button>
-          <button onClick={redo}><FaRedo /></button>
-      </div>
+          <div className="toolbox">
+            <button className={selectedTool === "selection" ? "selected" : ""} onClick={() => { setTool("selection"); setSelectedTool("selection"); }} title="Selection"><FaMousePointer /></button>
+            <button className={selectedTool === "line" ? "selected" : ""} onClick={() => { setTool("line"); setSelectedTool("line"); }} title="Line"><IoRemoveOutline /></button>
+            <button className={selectedTool === "rectangle" ? "selected" : ""} onClick={() => { setTool("rectangle"); setSelectedTool("rectangle"); }} title="Rectangle"><MdOutlineRectangle /></button>
+            <button className={selectedTool === "pencil" ? "selected" : ""} onClick={() => { setTool("pencil"); setSelectedTool("pencil"); }} title="Pen"><FaPencilAlt /></button>
+            <button className={selectedTool === "text" ? "selected" : ""} onClick={() => { setTool("text"); setSelectedTool("text"); }} title="Text"><FaFont /></button>
+            <button onClick={undo} title="Undo"><FaUndo /></button>
+            <button onClick={redo} title="Redo"><FaRedo /></button>
+          </div>
         </div>
       </Draggable>
       {action === "writing" ? (
