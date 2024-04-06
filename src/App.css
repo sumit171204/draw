@@ -162,9 +162,8 @@ body.dark-mode {
 /* Media Queries */
 @media only screen and (max-width: 600px) {
   .toolbox-container {
-    position: fixed;
     margin-top: 600px;
-    margin-left:50px;
+    margin-left:70px;
   }
 
   .toolbox {
