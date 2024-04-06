@@ -548,8 +548,8 @@ const handleClosePopup = () => {
 const toggleDarkMode = () => {
   setDarkMode(prevDarkMode => !prevDarkMode);
 }
-const handleTouchStart = event => {
-  event.preventDefault(); // Prevent default touch behavior like scrolling
+const handleTouchStart = (event) => {
+  event.preventDefault();
   const touch = event.touches[0];
   handleMouseDown({
     clientX: touch.clientX,
@@ -557,8 +557,8 @@ const handleTouchStart = event => {
   });
 };
 
-const handleTouchMove = event => {
-  event.preventDefault(); // Prevent default touch behavior like scrolling
+const handleTouchMove = (event) => {
+  event.preventDefault();
   const touch = event.touches[0];
   handleMouseMove({
     clientX: touch.clientX,
@@ -566,10 +566,11 @@ const handleTouchMove = event => {
   });
 };
 
-const handleTouchEnd = event => {
-  event.preventDefault(); // Prevent default touch behavior like scrolling
+const handleTouchEnd = (event) => {
+  event.preventDefault();
   handleMouseUp();
 };
+
 
   return (
     <div>
