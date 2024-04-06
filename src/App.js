@@ -383,6 +383,13 @@ const App = () => {
         }
       }
     } else {
+      // Check if it's a touch-enabled device
+      if ('ontouchstart' in window) {
+        setAction("touch-drawing"); // Set a new action for touch devices
+        setSelectedElement(null); // Clear selected element
+        return;
+      }
+      
       const id = elements.length;
       const element = createElement(id, clientX, clientY, clientX, clientY, tool, pencilColor); // Pass pencilColor here
       setElements(prevState => [...prevState, element]);
@@ -390,7 +397,8 @@ const App = () => {
     
       setAction(tool === "text" ? "writing" : "drawing");
     }
-  };
+};
+
   
   
   const handleMouseMove = event => {
