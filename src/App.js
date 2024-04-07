@@ -607,7 +607,7 @@ const handleTouchCancel = event => {
     <div>
       {showPopup && (
       <div className={`popup ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000'}}>
-          <button onClick={handleClosePopup}><IoCloseSharp /></button>
+          <button className={`popupbtn ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000'}} onClick={handleClosePopup}><IoCloseSharp /></button>
           <div className="popup-content">
             <h2>Notice</h2>
             <p>Currently added : Size and Color of Pen. ( Issues )</p>
