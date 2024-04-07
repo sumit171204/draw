@@ -141,9 +141,10 @@ body.dark-mode {
   height: auto;
   transform: translate(-50%, -50%);
   background-color: white;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   padding: 20px;
   z-index: 999;
+  border-radius: 15px;
 }
 
 .popup-content {
@@ -151,13 +152,63 @@ body.dark-mode {
 }
 
 .popup button {
-  margin-left: 570px;
+  position: absolute;
+  margin-left: 450px;
   font-size: 20px;
   border: none;
   cursor: pointer;
   background: transparent;
 }
 
+/* Add this CSS to your component's CSS file or style tag */
+.dark-mode .toolbox-container {
+  background-color: #232329;
+  color: #ffffff;
+}
+
+.dark-mode .toolbox button {
+  background-color: #232329;
+  color: #ffffff;
+}
+
+.dark-mode .toolbox :hover {
+  background-color: #a0a0a0;
+  color: #232329;
+}
+
+.dark-mode .options {
+  background-color: #232329;
+  color: #ffffff;
+}
+
+.dark-mode .options button {
+  background-color: #232329;
+  color: #ffffff;
+}
+
+.dark-mode .dropdown-content button {
+  background-color: #232329;
+  color: #ffffff;
+}
+
+.dark-mode .dropdown-content :hover {
+  background-color: #a0a0a0;
+  color: #232329;
+}
+
+.dark-mode .popup {
+  background-color: #232329;
+  color: #ffffff;
+}
+
+.dark-mode .popup button {
+  color: #ffffff;
+}
+
+.dark-mode #canvas {
+  background-color: #2e2e2e;
+  color: #ffffff;
+}
 
 /* Media Queries */
 @media only screen and (max-width: 600px) {

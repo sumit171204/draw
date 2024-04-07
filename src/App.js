@@ -13,10 +13,20 @@ const createElement = (id, x1, y1, x2, y2, type, pencilColor) => {
   switch (type) {
     case "line":
     case "rectangle":
+    case "triangle":
+    case "ellipse":
       const roughElement =
         type === "line"
           ? generator.line(x1, y1, x2, y2)
-          : generator.rectangle(x1, y1, x2 - x1, y2 - y1);
+          : type === "rectangle"
+          ? generator.rectangle(x1, y1, x2 - x1, y2 - y1)
+          : type === "triangle"
+          ? generator.polygon([
+              [x1, y1],
+              [(x1 + x2) / 2, y2],
+              [x2, y1],
+            ])
+          : generator.ellipse((x1 + x2) / 2, (y1 + y2) / 2, x2 - x1, y2 - y1);
       return { id, x1, y1, x2, y2, type, roughElement, pencilColor };
     case "pencil":
       return { id, type, points: [{ x: x1, y: y1 }], pencilColor };
@@ -26,6 +36,7 @@ const createElement = (id, x1, y1, x2, y2, type, pencilColor) => {
       throw new Error(`Type not recognised: ${type}`);
   }
 };
+
 
 const nearPoint = (x, y, x1, y1, name) => {
   return Math.abs(x - x1) < 5 && Math.abs(y - y1) < 5 ? name : null;
@@ -595,7 +606,7 @@ const handleTouchCancel = event => {
   return (
     <div>
       {showPopup && (
-        <div className="popup">
+      <div className={`popup ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000', border: darkMode ? '#ffffff' : '#000000' }}>
           <button onClick={handleClosePopup}><IoCloseSharp /></button>
           <div className="popup-content">
             <h2>Notice</h2>
@@ -607,10 +618,10 @@ const handleTouchCancel = event => {
         </div>
       )}
       <div>
-      <div className="options" >
-        <button className="btnoption" onClick={toggleDropdown}><HiOutlineBars3/></button>
+      <div className={`options ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000', border: darkMode ? '#ffffff' : '#000000'  }}>
+        <button className={`btnoption ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000', border: darkMode ? '#ffffff' : '#000000'  }} onClick={toggleDropdown}><HiOutlineBars3/></button>
         {showDropdown && (
-          <div className="dropdown-content">
+      <div className={`dropdown-content ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000', border: darkMode ? '#ffffff' : '#000000'  }}>
             <button onClick={handleOpen}><FaFolderOpen/>&nbsp;&nbsp;Open</button>
             <input id="file-input" type="file" onChange={handleFileInputChange} style={{ display: 'none' }} />
 
@@ -623,19 +634,19 @@ const handleTouchCancel = event => {
       
 
     </div>
-      <Draggable>
-        <div className="toolbox-container">
-          <div className="toolbox">
-            <button className={selectedTool === "selection" ? "selected" : ""} onClick={() => handleToolClick("selection")} title="Selection"><FaMousePointer /></button>
-            <button className={selectedTool === "line" ? "selected" : ""} onClick={() => handleToolClick("line")} title="Line"><IoRemoveOutline /></button>
-            <button className={selectedTool === "rectangle" ? "selected" : ""} onClick={() => handleToolClick("rectangle")} title="Rectangle"><MdOutlineRectangle /></button>
-            <button className={selectedTool === "pencil" ? "selected" : ""} onClick={() => { handlePencilClick(); handleToolClick("pencil"); }} title="Pen"><FaPencilAlt /></button>
-            <button className={selectedTool === "text" ? "selected" : ""} onClick={() => handleToolClick("text")} title="Text"><FaFont /></button>
-            <button onClick={undo} title="Undo"><FaUndo /></button>
-            <button onClick={redo} title="Redo"><FaRedo /></button>
-          </div>
+    <Draggable>
+    <div className={`toolbox-container ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000', border: darkMode ? '#ffffff' : '#000000'  }}>
+        <div className="toolbox">
+          <button className={selectedTool === "selection" ? "selected" : ""} onClick={() => handleToolClick("selection")} title="Selection"><FaMousePointer /></button>
+          <button className={selectedTool === "line" ? "selected" : ""} onClick={() => handleToolClick("line")} title="Line"><IoRemoveOutline /></button>
+          <button className={selectedTool === "rectangle" ? "selected" : ""} onClick={() => handleToolClick("rectangle")} title="Rectangle"><MdOutlineRectangle /></button>
+          <button className={selectedTool === "pencil" ? "selected" : ""} onClick={() => { handlePencilClick(); handleToolClick("pencil"); }} title="Pen"><FaPencilAlt /></button>
+          <button className={selectedTool === "text" ? "selected" : ""} onClick={() => handleToolClick("text")} title="Text"><FaFont /></button>
+          <button onClick={undo} title="Undo"><FaUndo /></button>
+          <button onClick={redo} title="Redo"><FaRedo /></button>
         </div>
-      </Draggable>
+      </div>
+    </Draggable>
       {action === "writing" ? (
         <textarea
           ref={textAreaRef}
@@ -648,7 +659,7 @@ const handleTouchCancel = event => {
             margin: 0,
             padding: 0,
             border: 0,
-            outline: 0,
+            outline: 0, 
             resize: "auto",
             overflow: "hidden",
             whiteSpace: "pre",
@@ -680,7 +691,7 @@ const handleTouchCancel = event => {
       style={{ 
         position: "absolute", 
         zIndex: 1,
-        backgroundColor: darkMode ? "#333333" : "#ffffff",
+        backgroundColor: darkMode ? "#2e2e2e" : "#ffffff",
         color: darkMode ? "#ffffff" : "#000000" 
       }}
     >
