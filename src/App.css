@@ -88,6 +88,8 @@ body.dark-mode {
 
 .dropdown-content button {
   border: none;
+  cursor: pointer;
+
   background-color: #fff;
   margin-top: 5px;
   width: 100%; 
@@ -108,7 +110,7 @@ body.dark-mode {
 .pencil-box {
   z-index: 2;
   margin-left: 15px;
-  margin-top: 150px;
+  margin-top: 250px;
   position: absolute;
   background-color: white;
   border: 1px solid #ccc;
@@ -158,6 +160,28 @@ body.dark-mode {
   border: none;
   cursor: pointer;
   background: transparent;
+}
+
+
+.sharebtn button{
+  position: fixed;
+  margin-left: 1400px;
+  margin-top: 10px;
+  z-index: 2;
+  position: absolute;
+  background-color: #fff;
+  cursor: pointer;
+  text-align: left; 
+  font-size: 15px; 
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(118, 118, 118, 0.1);
+}
+
+.sharebtn:hover button {
+  background-color: #3470d1;
+  color: #fff;
 }
 
 /* Add this CSS to your component's CSS file or style tag */

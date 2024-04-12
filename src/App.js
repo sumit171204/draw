@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { FaMousePointer, FaPencilAlt, FaFont, FaUndo, FaRedo, FaFolderOpen } from "react-icons/fa";
+import { FaMousePointer, FaPencilAlt, FaFont, FaUndo, FaRedo, FaFolderOpen,FaShare } from "react-icons/fa";
 import { MdOutlineRectangle, MdOutlineSaveAlt, MdDelete, MdDarkMode  } from "react-icons/md";
 import { IoRemoveOutline,IoCloseSharp } from "react-icons/io5";
 import rough from "roughjs/bundled/rough.esm";
@@ -390,10 +390,10 @@ const App = () => {
         }
       }
     } else {
-      // Check if it's a touch-enabled device
+    
       if ('ontouchstart' in window) {
-        setAction("touch-drawing"); // Set a new action for touch devices
-        setSelectedElement(null); // Clear selected element
+        setAction("touch-drawing"); 
+        setSelectedElement(null);
         return;
       }
       
@@ -495,12 +495,20 @@ const App = () => {
 
   const handleSave = () => {
     const canvas = document.getElementById("canvas");
-    const dataURL = canvas.toDataURL(); 
-    const anchor = document.createElement('a');
+    const tempCanvas = document.createElement("canvas");
+    const tempContext = tempCanvas.getContext("2d");
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    tempContext.fillStyle = darkMode ? "#2e2e2e" : "#ffffff";
+    tempContext.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    tempContext.drawImage(canvas, 0, 0);
+    const dataURL = tempCanvas.toDataURL();
+    const anchor = document.createElement("a");
     anchor.href = dataURL;
-    anchor.download = 'webdraw.png'; 
-    anchor.click(); 
+    anchor.download = "webdraw.png";
+    anchor.click();
   };
+  
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
@@ -571,13 +579,10 @@ const toggleDarkMode = () => {
   setDarkMode(prevDarkMode => !prevDarkMode);
 }
 
-// Remove handleMouseDown event handler
-
 const handleTouchStart = event => {
-  event.preventDefault(); // Prevent default touch behavior
+  event.preventDefault();
   const { clientX, clientY } = event.touches[0];
   
-  // Start drawing immediately after selecting a tool
   if (tool !== "selection") {
     const id = elements.length;
     const element = createElement(id, clientX, clientY, clientX, clientY, tool, pencilColor);
@@ -588,19 +593,35 @@ const handleTouchStart = event => {
 };
 
 const handleTouchMove = event => {
-  event.preventDefault(); // Prevent default touch behavior
+  event.preventDefault(); 
   const { clientX, clientY } = event.touches[0];
   handleMouseMove({ clientX, clientY });
 };
 
 const handleTouchEnd = event => {
-  event.preventDefault(); // Prevent default touch behavior
+  event.preventDefault(); 
   handleMouseUp();
 };
 
 const handleTouchCancel = event => {
-  event.preventDefault(); // Prevent default touch behavior
-  // Add your touch cancellation handling logic here
+  event.preventDefault();
+};
+
+const handleShare = () => {
+  const canvas = document.getElementById("canvas");
+  const canvasDataURL = canvas.toDataURL("image/png");
+  if (navigator.share) {
+    navigator.share({
+      title: "Share Title",
+      text: "Share Description",
+      url: window.location.href,
+      files: [new File([canvasDataURL], "canvas_image.png", { type: "image/png" })],
+    })
+      .then(() => console.log("Successfully shared"))
+      .catch((error) => console.log("Error sharing:", error));
+  } else {
+    console.log("Web Share API not supported");
+  }
 };
 
   return (
@@ -610,9 +631,10 @@ const handleTouchCancel = event => {
           <button className={`popupbtn ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000'}} onClick={handleClosePopup}><IoCloseSharp /></button>
           <div className="popup-content">
             <h2>Notice</h2>
-            <p>Currently added : Size and Color of Pen. ( Issues )</p>
-            <p>Cursor is now CrossHair.</p>
-            <p>Added Dark Mode!</p>
+            <p>Currently added : Share Button</p>
+            <p>Improved Dark Mode!</p>
+            <p>Click on pen for color and size</p>
+            <p>Some improvements to be done in color and size of pen</p>
             <p>Note : Website is in Early Development there are issues to be solved.</p>
           </div>
         </div>
@@ -632,7 +654,9 @@ const handleTouchCancel = event => {
         )}
       </div>
       
-
+      <div className="sharebtn">
+      <button onClick={handleShare} title="Share"><FaShare />&nbsp;&nbsp;Share</button>
+      </div>
     </div>
     <Draggable>
     <div className={`toolbox-container ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000', border: darkMode ? '#ffffff' : '#000000'  }}>
@@ -669,7 +693,7 @@ const handleTouchCancel = event => {
         />
       ) : null}
         {showPencilBox && (
-          <div className="pencil-box">
+          <div className={`pencil-box ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000', border: darkMode ? '#ffffff' : '#000000'  }}>
             <label htmlFor="pencil-color">Pen Color:</label>
             <input type="color" id="pencil-color" value={pencilColor} onChange={handlePencilColorChange} />
             <label htmlFor="pencil-size">Pen Size:</label>
