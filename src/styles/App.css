@@ -253,6 +253,8 @@ body.dark-mode {
     margin-left: 10px;
   }
   .popup{
+    margin-top: -1300px;
+    margin-left: -550px;
     width: 250px;
   }
   .popup button{
