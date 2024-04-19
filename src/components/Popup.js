@@ -17,12 +17,14 @@ const Popup = ({ onClose, darkMode }) => {
       <div className={`popup ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000'}}>
           <button className={`popupbtn ${darkMode ? 'dark-mode' : ''}`} style={{ backgroundColor: darkMode ? '#232329' : '#ffffff', color: darkMode ? '#ffffff' : '#000000'}} onClick={handleClosePopup}><IoCloseSharp /></button>
           <div className="popup-content">
-            <h2>Notice</h2>
-            <p>Updated on 17/04/2024.</p>
-            <p>Added Components, May Cause Some Errors!🆘</p>
+            <h2>🚧On Maintenance🛠</h2>
+            <h4>⚠️We are adding database and backend functionality.⚠️</h4>
+            <p>Updated on 19/04/2024.</p>
+            <p>Added Components✅, May Cause Some Errors!</p>
             <p>Now the Performance is Faster than Before!🚀</p>
-            <p>Currently added : Share Button.</p>
             <p>Note : Website is in Early Development there are issues to be solved.</p>
+            <h4>Website will be back till 1/05/2024.</h4>
+
           </div>
         </div>
       )}

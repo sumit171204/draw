@@ -9,6 +9,15 @@ import { createElement,getElementAtPosition,cursorForPosition,usePressedKeys,use
 import Popup from "./components/Popup";
 import Options from "./components/MenuOptions";
 import { DEFAULT_PENCIL_COLOR, DEFAULT_PENCIL_SIZE, DEFAULT_DARK_MODE } from "./constants/constants";
+import axios from 'axios';
+
+axios.get('/api/data')
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
 
 const App = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
